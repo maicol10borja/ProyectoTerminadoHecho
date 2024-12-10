@@ -9,7 +9,7 @@ public class Conexion {
     private static String url = "jdbc:mysql://localhost:3306/carro?useTimezone=true&serverTimezone=UTC";
     //declaramos una variable para el usuario
     private static String username = "root";
-    //declaramos una variable para guardar la contraseña
+    //declaramso una variable para guardar la contraseña
     private static String password = "";
     //implementamos un método para obtener la conexión
     public static Connection getConnection() throws SQLException {
