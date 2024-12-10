@@ -10,9 +10,10 @@ import models.Carro;
 import models.ItemCarro;
 import models.Productos;
 import service.ProductoService;
-import service.ProductoServiceImplement;
+import service.ProductoServiceJdbcImplement;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.Optional;
 
 @WebServlet("/agregar-carro")
@@ -20,7 +21,10 @@ public class AgregarCarroServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long idProducto = Long.parseLong(req.getParameter("idProducto"));
-        ProductoService service = new ProductoServiceImplement();
+        //ProductoService service = new ProductoServiceImplement();
+        //Traemos la conexión
+        Connection conn = (Connection) req.getAttribute("conn");
+        ProductoService service = new ProductoServiceJdbcImplement(conn);
         Optional<Productos> producto=service.agregarPorId(idProducto);
         if(producto.isPresent()) {
             ItemCarro item = new ItemCarro(1,producto.get());

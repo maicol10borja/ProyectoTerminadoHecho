@@ -3,7 +3,7 @@ package models;
 public class Productos {
     private Long idProducto;
     private String nombre;
-    private String categoria;
+    private Categoria categoria;
     private double precio;
 
     public Productos() {
@@ -12,7 +12,9 @@ public class Productos {
     public Productos(Long idProducto, String nombre, String categoria, double precio) {
         this.idProducto = idProducto;
         this.nombre = nombre;
-        this.categoria = categoria;
+        Categoria categoria1=new Categoria();
+        categoria1.setNombre(categoria);
+        this.categoria = categoria1;
         this.precio = precio;
     }
 
@@ -32,11 +34,11 @@ public class Productos {
         this.nombre = nombre;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
