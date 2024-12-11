@@ -39,6 +39,7 @@
         <%if(username.isPresent()){%>
         <td><%=p.getPrecio()%></td>
         <td><a href="<%=request.getContextPath()%>/agregar-carro?idProducto=<%=p.getIdProducto()%>">agregar</a></td>
+        <td><a href="<%=request.getContextPath()%>/productos/form?idProducto=<%=p.getIdProducto()%>">editar</a></td>
         <% } %>
     </tr>
     <%}%>

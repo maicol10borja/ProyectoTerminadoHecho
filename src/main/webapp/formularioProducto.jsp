@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" import="java.util.*, models.*" %>
 <%
     List<Categoria> categorias = (List<Categoria>) request.getAttribute("categorias");
+    Productos productos = (Productos) request.getAttribute("productos");
 %>
 <html>
 
@@ -22,7 +23,8 @@
         <div>
             <label for="nombre">Ingrese el nombre del producto:</label>
             <div>
-                <input type="text" id="nombre" name="nombre">
+                <input type="hidden" name="idProducto" value="<%=productos.getIdProducto()%>">
+                <input type="text" id="nombre" name="nombre" value="<%=productos.getNombre() != null? productos.getNombre():""%>">
             </div>
         </div>
         <div>
@@ -31,7 +33,7 @@
                 <select name="categoria" id="categoria">
                     <option value="">---Seleccione una Categoria---</option>
                     <%for (Categoria c : categorias) {%>
-                    <option value="<%=c.getIdCategoria()%>"><%=c.getNombre()%></option>
+                    <option value="<%=c.getIdCategoria()%>" <%=c.getIdCategoria().equals(productos.getCategoria().getIdCategoria())? "selected":""%>><%=c.getNombre()%></option>
                     <%}%>
                 </select>
             </div>
@@ -39,7 +41,7 @@
         <div>
             <label for="precio">Ingrese el precio</label>
             <div>
-                <input type="number" name="precio" id="precio" step="0.01">
+                <input type="number" name="precio" id="precio" step="0.01" value="<%=productos.getPrecio() !=0? productos.getPrecio():""%>">
             </div>
         </div>
         <div>

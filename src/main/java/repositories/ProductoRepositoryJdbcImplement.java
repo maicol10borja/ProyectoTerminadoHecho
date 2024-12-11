@@ -27,7 +27,7 @@ public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
         List<Productos> productos = new ArrayList<>();
         try(Statement stmt = conn.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT p.*, c.nombre as categoria FROM producto as p "+
-                    " inner join categoria as c ON (p.idcategoria = c.idcategoria)")){
+                    " inner join categoria as c ON (p.idcategoria = c.idcategoria) order by p.idproducto ASC")){
             while(rs.next()){
                 Productos p = getProductos(rs);
                 productos.add(p);
@@ -42,7 +42,7 @@ public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
     public Productos porId(Long idProducto) throws SQLException {
        Productos productos=null;
        try(PreparedStatement stmt = conn.prepareStatement("SELECT p.*, c.nombre as categoria FROM " +
-               " producto as p inner join categoria as c ON(p.idcategoria=c.idcategoria)WHERE p.idproducto=?")){
+               " producto as p inner join categoria as c ON(p.idcategoria=c.idcategoria)WHERE p.idproducto=? " )){
            stmt.setLong(1, idProducto);
            try(ResultSet rs=stmt.executeQuery()){
                if(rs.next()){
