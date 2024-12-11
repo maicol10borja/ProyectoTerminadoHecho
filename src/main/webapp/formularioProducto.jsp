@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<h1>FORMULARIO PRODUCTOS</h1>
+<h1>FORMULARIO PRODUCTOS EMPRESA</h1>
 <div>
     <form action="<%=request.getContextPath()%>/productos/form" method="post">
         <div>
