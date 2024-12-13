@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
     /*Necesitanmos una conexión a la bbdd, la conexión se tiene que pasar al repository, luego
-    * se lo pasa al Service y a su vez el sevlet lo obtiene del objeto request de los atributos
-    * que se setearon por request vueleve a pasar al service y el service pasa al reposository*/
+     * se lo pasa al Service y a su vez el sevlet lo obtiene del objeto request de los atributos
+     * que se setearon por request vueleve a pasar al service y el service pasa al reposository*/
     private Connection conn;
     //Implementamos un constructor para inicializar la conexión
 
@@ -40,39 +40,40 @@ public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
 
     @Override
     public Productos porId(Long idProducto) throws SQLException {
-       Productos productos=null;
-       try(PreparedStatement stmt = conn.prepareStatement("SELECT p.*, c.nombre as categoria FROM " +
-               " producto as p inner join categoria as c ON(p.idcategoria=c.idcategoria)WHERE p.idproducto=? " )){
-           stmt.setLong(1, idProducto);
-           try(ResultSet rs=stmt.executeQuery()){
-               if(rs.next()){
-                   productos=getProductos(rs);
-               }
-           }
+        Productos productos=null;
+        try(PreparedStatement stmt = conn.prepareStatement("SELECT p.*, c.nombre as categoria FROM " +
+                " producto as p inner join categoria as c ON(p.idcategoria=c.idcategoria)WHERE p.idproducto=? " )){
+            stmt.setLong(1, idProducto);
+            try(ResultSet rs=stmt.executeQuery()){
+                if(rs.next()){
+                    productos=getProductos(rs);
+                }
+            }
 
-       }
-       return productos;
+        }
+        return productos;
     }
 
     @Override
     public void guardar(Productos productos) throws SQLException {
         String sql;
-        if(productos.getIdProducto()!=null && productos.getIdProducto()>0){
-            sql="update producto set idcategoria=?, nombre=?, precio=? where idproducto=?";
-        }else{
-            sql="INSERT INTO producto (idcategoria, nombre,precio) VALUES(?,?,?)";
+        if (productos.getIdProducto() != null && productos.getIdProducto() > 0) {
+            sql = "UPDATE producto SET idcategoria = ?, nombre = ?, stock = ?, precio = ? WHERE idproducto = ?";
+        } else {
+            sql = "INSERT INTO producto (idcategoria, nombre, stock, precio) VALUES (?, ?, ?, ?)";
         }
-        try(PreparedStatement stmt=conn.prepareStatement(sql)){
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, productos.getCategoria().getIdCategoria());
-            stmt.setString(2,productos.getNombre());
-            stmt.setDouble(3,productos.getPrecio());
-            if(productos.getIdProducto()!=null && productos.getIdProducto()>0){
-                stmt.setLong(4,productos.getIdProducto());
+            stmt.setString(2, productos.getNombre());
+            stmt.setInt(3, productos.getStock());
+            stmt.setDouble(4, productos.getPrecio());  // Agregar el stock
+            if (productos.getIdProducto() != null && productos.getIdProducto() > 0) {
+                stmt.setLong(5, productos.getIdProducto());
             }
             stmt.executeUpdate();
         }
-
     }
+
 
     @Override
     public void eliminar(Long idProducto) throws SQLException {
@@ -87,6 +88,7 @@ public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
         Productos p= new Productos();
         p.setIdProducto(rs.getLong("idproducto"));
         p.setNombre(rs.getString("nombre"));
+        p.setStock(rs.getInt("stock"));
         p.setPrecio(rs.getDouble("precio"));
         Categoria c=new Categoria();
         c.setIdCategoria(rs.getLong("idcategoria"));
@@ -94,4 +96,13 @@ public class ProductoRepositoryJdbcImplement implements Repository<Productos>{
         p.setCategoria(c);
         return p;
     }
+    public void actualizarStock(Long idProducto, int nuevoStock) throws SQLException {
+        String sql = "UPDATE producto SET stock = ? WHERE idproducto = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, nuevoStock);
+            stmt.setLong(2, idProducto);
+            stmt.executeUpdate();
+        }
+    }
+
 }

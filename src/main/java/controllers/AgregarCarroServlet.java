@@ -21,23 +21,39 @@ public class AgregarCarroServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long idProducto = Long.parseLong(req.getParameter("idProducto"));
-        //ProductoService service = new ProductoServiceImplement();
-        //Traemos la conexión
         Connection conn = (Connection) req.getAttribute("conn");
         ProductoService service = new ProductoServiceJdbcImplement(conn);
-        Optional<Productos> producto=service.agregarPorId(idProducto);
-        if(producto.isPresent()) {
-            ItemCarro item = new ItemCarro(1,producto.get());
+
+        // Obtener el producto
+        Optional<Productos> producto = service.agregarPorId(idProducto);
+
+        if (producto.isPresent()) {
+            // Crear el item del carrito
+            ItemCarro item = new ItemCarro(1, producto.get());
+
+            // Obtener la sesión y el carrito
             HttpSession session = req.getSession();
             Carro carro;
-            if(session.getAttribute("carro") == null) {
+            if (session.getAttribute("carro") == null) {
                 carro = new Carro();
                 session.setAttribute("carro", carro);
-            }else{
-                carro = (Carro)session.getAttribute("carro");
+            } else {
+                carro = (Carro) session.getAttribute("carro");
             }
+
+            // Agregar el item al carrito
             carro.addItemCarro(item);
+
+            // Reducir el stock del producto
+            Productos prod = producto.get();
+            if (prod.getStock() > 0) {
+                int nuevoStock = prod.getStock() - 1;
+                service.actualizarStock(idProducto, nuevoStock);
+            }
         }
-        resp.sendRedirect(req.getContextPath()+"/ver-carro");
+
+        // Redirigir al carrito
+        resp.sendRedirect(req.getContextPath() + "/ver-carro");
     }
+
 }

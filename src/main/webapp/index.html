@@ -2,15 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manejo de Sesiones</title>
+    <!-- Vincula Bootstrap desde un CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos adicionales si son necesarios -->
+    <style>
+        body {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>manejo de sesiones </h1>
-<ul>
-    <li><a href="/carro_compras/productos">Ver productos</a></li>
-    <li><a href="/carro_compras/login.html">Login</a></li>
-    <li><a href="/carro_compras/logout">Logout</a></li>
-    <li><a href="/carro_compras/ver-carro">Ver carro</a></li>
-</ul>
+
+<div class="container">
+    <h1 class="text-center">Manejo de Sesiones</h1>
+    <div class="alert alert-info">
+        Esta página permite manejar sesiones para el carrito de compras.
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item"><a href="/carro_compras/productos" class="btn btn-link">Ver productos</a></li>
+        <li class="list-group-item"><a href="/carro_compras/login.html" class="btn btn-link">Login</a></li>
+        <li class="list-group-item"><a href="/carro_compras/logout" class="btn btn-link">Logout</a></li>
+        <li class="list-group-item"><a href="/carro_compras/categoria" class="btn btn-link">Ver Categorias</a></li>
+        <li class="list-group-item"><a href="/carro_compras/ver-carro" class="btn btn-link">Ver carro</a></li>
+
+    </ul>
+</div>
+
+<!-- Vincula los scripts de Bootstrap para funcionalidades (opcional) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 </body>
 </html>

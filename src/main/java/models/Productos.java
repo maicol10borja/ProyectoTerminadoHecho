@@ -4,17 +4,17 @@ public class Productos {
     private Long idProducto;
     private String nombre;
     private Categoria categoria;
+    private int stock;
     private double precio;
 
     public Productos() {
     }
 
-    public Productos(Long idProducto, String nombre, String categoria, double precio) {
+    public Productos(Long idProducto, String nombre, Categoria categoria, int stock, double precio) {
         this.idProducto = idProducto;
         this.nombre = nombre;
-        Categoria categoria1=new Categoria();
-        categoria1.setNombre(categoria);
-        this.categoria = categoria1;
+        this.categoria = categoria;
+        this.stock = stock;
         this.precio = precio;
     }
 
@@ -40,6 +40,14 @@ public class Productos {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public double getPrecio() {

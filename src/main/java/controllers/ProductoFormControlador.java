@@ -51,38 +51,57 @@ public class ProductoFormControlador extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Connection conn= (Connection) req.getAttribute("conn");
+        Connection conn = (Connection) req.getAttribute("conn");
         ProductoService service = new ProductoServiceJdbcImplement(conn);
         String nombre = req.getParameter("nombre");
+
+        // Capturamos el precio
         Double precio;
-        try{
-            precio=Double.valueOf(req.getParameter("precio"));
-        }catch (NumberFormatException e){
-            precio=0.0;
+        try {
+            precio = Double.valueOf(req.getParameter("precio"));
+        } catch (NumberFormatException e) {
+            precio = 0.0;
         }
+
+        // Capturamos el idCategoria
         Long idCategoria;
-        try{
-            idCategoria=Long.valueOf(req.getParameter("categoria"));
-        }catch (NumberFormatException e){
-            idCategoria=0L;
+        try {
+            idCategoria = Long.valueOf(req.getParameter("categoria"));
+        } catch (NumberFormatException e) {
+            idCategoria = 0L;
         }
-        //Voy a obtner el idproducto
+
+        // Capturamos el stock
+        int stock;
+        try {
+            stock = Integer.parseInt(req.getParameter("stock"));
+        } catch (NumberFormatException e) {
+            stock = 0;  // En caso de error, asignamos 0 como valor por defecto
+        }
+
+        // Obtención del idProducto (si está presente)
         long idProducto;
-        try{
-            idProducto=Long.parseLong(req.getParameter("idProducto"));
-        }catch (NumberFormatException e){
-            idProducto=0L;
+        try {
+            idProducto = Long.parseLong(req.getParameter("idProducto"));
+        } catch (NumberFormatException e) {
+            idProducto = 0L;
         }
-        Productos productos= new Productos();
+
+        // Creación del objeto Producto
+        Productos productos = new Productos();
         productos.setIdProducto(idProducto);
         productos.setNombre(nombre);
-        Categoria categoria= new Categoria();
+        Categoria categoria = new Categoria();
         categoria.setIdCategoria(idCategoria);
         productos.setCategoria(categoria);
         productos.setPrecio(precio);
+        productos.setStock(stock);  // Asignamos el stock
+
+        // Guardado del producto
         service.guarda(productos);
-        //REdireccional a un listado para que no se ejecute el método doPost
-        //nuevamente y se guarde los datos duplicados
-        resp.sendRedirect(req.getContextPath()+"/productos");
+
+        // Redirección para evitar la repetición del envío del formulario
+        resp.sendRedirect(req.getContextPath() + "/productos");
     }
+
 }

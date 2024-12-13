@@ -12,6 +12,7 @@ import service.LoginServiceSessionImplement;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
+
 @WebServlet({"/login", "/login.html"})
 public class LoginServlet extends HttpServlet {
     final static String USERNAME = "admin";
@@ -19,47 +20,39 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       /* Cookie[] cookies = req.getCookies() != null ? req.getCookies() : new Cookie[0];
+        // Implementación de la sesión
+        LoginService auth = new LoginServiceSessionImplement();
+        Optional<String> usernameOptional = auth.getUsername(req);
 
-        Optional<String> cookieOptional = Arrays.stream(cookies)
-                .filter(c -> "username".equals(c.getName()))
-                //Convertimos de cookie a string
-                .map(Cookie::getValue)
-                .findAny();*/
-        //esta sección es para la cookie
-        /*LoginService auth=new LoginServiceImplement();
-        Optional<String> cookieOptional=auth.getUsername(req);*/
-        //Implementamos objeto de la sesion
-        LoginService auth=new LoginServiceSessionImplement();
-        //Creamos una variable optional donde guardamos
-        //el nombre del usuario obteniendolo del método
-        //getUsername
-        Optional<String> usernameOptional=auth.getUsername(req);
-        //Si el username esta presente quiero que me muestre
-        //la información de login exitoso
         if (usernameOptional.isPresent()) {
+            // Si el usuario está autenticado, mostrar la página de bienvenida
             resp.setContentType("text/html;charset=UTF-8");
-            try(PrintWriter out = resp.getWriter()) {
-                //Creo la plantilla html
+            try (PrintWriter out = resp.getWriter()) {
+                // HTML con Bootstrap
                 out.print("<!DOCTYPE html>");
-                out.println("<html>");
+                out.println("<html lang='es'>");
                 out.println("<head>");
-                out.println("<meta charset=\"utf-8\">");
+                out.println("<meta charset='UTF-8'>");
+                out.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+                out.println("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>");
                 out.println("<title>Hola " + usernameOptional.get() + "</title>");
                 out.println("</head>");
                 out.println("<body>");
-                out.println("<h1>Hola " + usernameOptional.get() + " ya has iniciado sesión anteriormente</h1>");
-                out.println("<p><a href='"+req.getContextPath()+"/index.html'>Volver al inicio</a></p>");
-                out.println("<p><a href='"+req.getContextPath()+"/logout'>Cerrar sesion</a></p>");
+                out.println("<div class='container mt-5'>");
+                out.println("<h1 class='text-center'>Hola " + usernameOptional.get() + ", ya has iniciado sesión anteriormente</h1>");
+                out.println("<div class='text-center mt-4'>");
+                out.println("<a class='btn btn-primary' href='" + req.getContextPath() + "/index.html'>Volver al inicio</a>");
+                out.println("<a class='btn btn-danger ms-2' href='" + req.getContextPath() + "/logout'>Cerrar sesión</a>");
+                out.println("</div>");
+                out.println("</div>");
+                out.println("<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'></script>");
                 out.println("</body>");
                 out.println("</html>");
             }
-            /*Caso contrario me muestre un error
-             * de me devuleve al login  */
-        }else{
+        } else {
+            // Si el usuario no está autenticado, redirigir al formulario de login
             getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
         }
-
     }
 
     @Override
@@ -68,35 +61,15 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         if (USERNAME.equals(username) && PASSWORD.equals(password)) {
-
-            //Implementamos la Cookie
-            //Cookie usernameCookie = new Cookie("username", username);
-            //  resp.addCookie(usernameCookie);
-            // resp.setContentType("text/html;charset=UTF-8");
-            /*try (PrintWriter out = resp.getWriter()) {
-
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("    <head>");
-                out.println("        <meta charset=\"UTF-8\">");
-                out.println("        <title>Login correcto</title>");
-                out.println("    </head>");
-                out.println("    <body>");
-                out.println("        <h1>Login correcto!</h1>");
-                out.println("        <h3>Hola " + username + " has iniciado sesión con éxito!</h3>");
-                out.println("<p><a href='"+req.getContextPath()+"/index.html'>Volver al inicio</a></p>");
-                out.println("    </body>");
-                out.println("</html>");
-            }*/
-            //no poner la siguinet linea de código antes de usar el metodo get
-
-            //Creo la sesion
-            HttpSession session=req.getSession();
+            // Si las credenciales son correctas, crear la sesión
+            HttpSession session = req.getSession();
             session.setAttribute("username", username);
 
-            resp.sendRedirect(req.getContextPath()+"/login.html");
+            // Redirigir al formulario de login después de iniciar sesión
+            resp.sendRedirect(req.getContextPath() + "/login.html");
         } else {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lo sentimos no esta autorizado para ingresar a esta página!");
+            // Si las credenciales son incorrectas, mostrar un error
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lo sentimos, no estás autorizado para ingresar a esta página!");
         }
     }
 }

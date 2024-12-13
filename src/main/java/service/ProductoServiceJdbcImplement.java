@@ -40,6 +40,7 @@ public class ProductoServiceJdbcImplement implements ProductoService{
         }
     }
 
+
     @Override
     public void guarda(Productos producto) {
         try {
@@ -75,4 +76,13 @@ public class ProductoServiceJdbcImplement implements ProductoService{
             throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
         }
     }
+    @Override
+    public void actualizarStock(Long idProducto, int nuevoStock) {
+        try {
+            repositoryJdbc.actualizarStock(idProducto, nuevoStock);
+        } catch (SQLException throwables) {
+            throw new ServiceJdbcException(throwables.getMessage(), throwables.getCause());
+        }
+    }
+
 }

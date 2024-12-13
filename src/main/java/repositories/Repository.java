@@ -26,4 +26,6 @@ public interface Repository <T>{
     /*REcibe un identificador único y si exite el identificador lo borra de la base de datos
     * */
     void eliminar (Long id)throws SQLException;
+    void actualizarStock(Long idProducto, int nuevoStock) throws SQLException;
+
 }
